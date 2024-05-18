@@ -125,15 +125,19 @@ void main(void)
         /************************************************
             DEREFERENCIA DE APUNTADORES
         ************************************************/
-        PUERTO_P1->DIR &= ~0x10;                               //PIN P1.4 COMO ENTRADA
-        PUERTO_P1->REN |= 0x10;                                //HABILITAMOS RESISTENCIA
-        PUERTO_P1->OUT |= 0x10;                                //PULL UP
+        PUERTO_P1->DIR &= ~0x02;                               //PIN P1.4 COMO ENTRADA
+        PUERTO_P1->REN |= 0x02;                                //HABILITAMOS RESISTENCIA
+        PUERTO_P1->OUT |= 0x02;                                //PULL UP
+
+        PUERTO_P1->DIR |= 0x01;
+        PUERTO_P1->OUT |= 0x01;
 
         PUERTO_P2->DIR |= 0x07;                                //PIN P2.0, P2.1, P2.2  COMO SALIDA, LEDS RGB
         PUERTO_P2->OUT= ~0x07;                               // APAGADOS
         while(1){
-            if ( GPIO_PIN_IN(0x10) != 1)                // ENTRA AL PRESIONAR EL SWITCH DEL PUERTO P1.4 (CUANDO ESTA EN BAJO)
+            if ( GPIO_PIN_IN(0x02) != 1)                // ENTRA AL PRESIONAR EL SWITCH DEL PUERTO P1.4 (CUANDO ESTA EN BAJO)
             {
+                PUERTO_P1->OUT &= ~0x01;
                 if(bandera == FALSE)
                     {
                         bandera = TRUE;                                 //BANDERA EN ALTO
@@ -147,13 +151,13 @@ void main(void)
                             PUERTO_P2->OUT &= ~0x02;                           //APAGA GREEN
                             PUERTO_P2->OUT |= 0x04;                            //ENCIENDE BLUE
                             for(i=RETARDO; i>0 ;i--);
-                         if ( GPIO_PIN_IN(0x10) != 1) bandera=FALSE;    // ENTRA CUANDO PRESIONAMOS BOTON DE P1.4
-                         while( GPIO_PIN_IN(0x10) != 1);                //MIENTRAS ESTE PRESIONADO EL BOTON
+                         if ( GPIO_PIN_IN(0x02) != 1) bandera=FALSE;    // ENTRA CUANDO PRESIONAMOS BOTON DE P1.4
+                         while( GPIO_PIN_IN(0x02) != 1);                //MIENTRAS ESTE PRESIONADO EL BOTON
                         }
 
                     }
                 PUERTO_P2->OUT  &= ~0x07;                         //APAGA TODOS
-
+                PUERTO_P1->OUT |= 0x01;
             }
             for(i=RETARDO2; i>0 ;i--);
         }
