@@ -66,12 +66,17 @@ void main(void)
     (*((volatile uint8_t *)(0x040004c06))) |= 0x10;                                //HABILITAMOS RESISTENCIA                        (p1_ren)
     (*((volatile uint8_t *)(0x040004c02))) |= 0x10;                                //PULL UP                                        (p1_out)
 
+
+    (*((volatile uint8_t *)(0x040004c04))) |= 0x01;
+    (*((volatile uint8_t *)(0x040004c02))) |= 0x01;
+
     (*((volatile uint8_t *)(0x040004c05))) |= 0x07;                                //PIN P2.0, P2.1, P2.2  COMO SALIDA, LEDS RGB    (p2_dir)
     (*((volatile uint8_t *)(0x040004c03))) &= ~0x07;                               // APAGADOS                                      (p2_out)
     while (1)
     {
         if (Gpio_pin_in(0x10) != 1) // ENTRA AL PRESIONAR EL SWITCH DEL PUERTO P1.4 (CUANDO ESTA EN BAJO)
         {
+            (*((volatile uint8_t *)(0x040004c02))) &= ~0x01;
             if (bandera == FALSE)
             {
                 bandera = TRUE;                                //BANDERA EN ALTO
@@ -93,6 +98,7 @@ void main(void)
 
             }
             (*((volatile uint8_t*) (0x040004c03))) &= ~0x07;       //APAGA TODOS
+            (*((volatile uint8_t *)(0x040004c02))) |= 0x01;
             // while( GPIO_PIN_IN(0x10) != 1);
         }
         for (i = RETARDO2; i > 0; i--);
